@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  name          String
+  role          String        @default("patient")
+  language      String        @default("en")
+  createdAt     DateTime      @default(now())
+  appointments  Appointment[]
+  messages      ChatMessage[]
+}
+
+model Appointment {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  doctorName      String
+  serviceType     String
+  datetime        DateTime
+  status          String   @default("confirmed")
+  aiRecommendation String?
+  createdAt       DateTime @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  role      String
+  content   String   @db.Text
+  timestamp DateTime @default(now())
+}
