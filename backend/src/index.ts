@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/Auth";
 import chatRoutes from "./routes/Chat";
+import appointmentRoutes from "./routes/Appointments"; // Add this
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/appointments", appointmentRoutes); // Add this
 
 const PORT = process.env.PORT || 3001;
 
