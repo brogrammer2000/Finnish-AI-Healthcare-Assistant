@@ -16,18 +16,24 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null); // Add this
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Load chat history on mount
   useEffect(() => {
     loadHistory();
   }, []);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Auto-focus input on mount and after sending message
+  useEffect(() => {
+    if (!loading) {
+      inputRef.current?.focus();
+    }
+  }, [loading]);
 
   const loadHistory = async () => {
     try {
@@ -97,31 +103,30 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Header */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+      {/* Header - Mobile Optimized */}
+      <nav className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={() => navigate("/")}
-              className="text-blue-600 hover:text-blue-700"
+              className="text-blue-600 hover:text-blue-700 text-sm sm:text-base"
             >
               ← Back
             </button>
-            <h1 className="text-xl font-bold text-gray-900">
+            <h1 className="text-base sm:text-xl font-bold text-gray-900">
               AI Health Assistant
             </h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={clearHistory}
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-xs sm:text-sm text-gray-600 hover:text-gray-900"
             >
-              Clear History
+              Clear
             </button>
-            <span className="text-gray-700">{user?.name}</span>
             <button
               onClick={logout}
-              className="text-red-600 hover:text-red-700"
+              className="text-xs sm:text-sm text-red-600 hover:text-red-700"
             >
               Logout
             </button>
@@ -129,15 +134,15 @@ export default function Chat() {
         </div>
       </nav>
 
-      {/* Messages */}
+      {/* Messages - Mobile Optimized */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-4 space-y-4">
+        <div className="max-w-4xl mx-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
           {messages.length === 0 && (
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="text-center py-8 sm:py-12">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 Hello! How can I help you today?
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Describe your symptoms and I'll help assess your situation.
               </p>
             </div>
@@ -149,13 +154,15 @@ export default function Chat() {
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-2xl px-4 py-3 rounded-lg ${
+                className={`max-w-[85%] sm:max-w-2xl px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base ${
                   msg.role === "user"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-900 shadow-sm"
                 }`}
               >
-                <div className="whitespace-pre-wrap">{msg.content}</div>
+                <div className="whitespace-pre-wrap break-words">
+                  {msg.content}
+                </div>
               </div>
             </div>
           ))}
@@ -182,23 +189,25 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Input */}
-      <div className="bg-white border-t">
-        <div className="max-w-4xl mx-auto p-4">
+      {/* Input - Mobile Optimized with Auto-focus */}
+      <div className="bg-white border-t safe-bottom">
+        <div className="max-w-4xl mx-auto p-3 sm:p-4">
           <div className="flex gap-2">
             <input
+              ref={inputRef} // Add ref
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && !loading && sendMessage()}
               placeholder="Describe your symptoms..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={loading}
+              autoFocus // Add this
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {loading ? "Sending..." : "Send"}
             </button>
