@@ -254,17 +254,29 @@ npm run dev
 
 Clean, accessible authentication with demo account information for easy testing.
 
+<img width="477" height="757" alt="Healthcare Al" src="https://github.com/user-attachments/assets/443383a2-4bff-45f8-a246-b14b4b3db3e3" />
+
+
 ### AI Chat Interface
 
 Real-time conversation with intelligent health triage and care recommendations.
+
+<img width="973" height="844" alt="hwe had freguent burpine and hewy flitulence but no acidty of pain" src="https://github.com/user-attachments/assets/b0136ef9-730a-4323-a85f-166e23149a96" />
+
 
 ### Appointment Booking
 
 Intuitive booking flow with real-time availability and multiple service options.
 
+<img width="1240" height="916" alt="Pasted Graphic 7" src="https://github.com/user-attachments/assets/a821991f-03f8-4309-bb09-555c6303c2cb" />
+
+
 ### Admin Dashboard
 
 Comprehensive overview with statistics, search, and appointment management.
+
+<img width="1240" height="685" alt="Q  Search by patient name, email, or doctor" src="https://github.com/user-attachments/assets/6bb142de-bd73-4b22-9fd6-b056f3a71f3c" />
+
 
 ---
 
