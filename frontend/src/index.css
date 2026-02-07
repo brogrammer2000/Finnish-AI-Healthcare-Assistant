@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   /* Modern font stack */
@@ -62,7 +60,8 @@
 
   /* Fancy button */
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200;
+    background: linear-gradient(to right, #2563eb, #1d4ed8);
+    @apply text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200;
   }
 
   .btn-secondary {
@@ -122,19 +121,23 @@
 
   /* Status badges */
   .badge-success {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-green-400 to-green-500 text-white shadow-sm;
+    background: linear-gradient(to right, #4ade80, #22c55e);
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
   }
 
   .badge-warning {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-400 to-yellow-500 text-white shadow-sm;
+    background: linear-gradient(to right, #facc15, #eab308);
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
   }
 
   .badge-danger {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-red-400 to-red-500 text-white shadow-sm;
+    background: linear-gradient(to right, #f87171, #ef4444);
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
   }
 
   .badge-info {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-sm;
+    background: linear-gradient(to right, #60a5fa, #3b82f6);
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
   }
 }
 
@@ -166,7 +169,8 @@
 
   /* Text gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+    background: linear-gradient(to right, #2563eb, #9333ea);
+    @apply bg-clip-text text-transparent;
   }
 
   /* Shadow styles */
