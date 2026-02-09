@@ -5,7 +5,13 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": [
+      "vite/client",
+      "vitest",
+      "jest",
+      "@testing-library/jest-dom",
+      "node"
+    ],
     "skipLibCheck": true,
 
     /* Bundler mode */

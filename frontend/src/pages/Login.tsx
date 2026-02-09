@@ -76,9 +76,7 @@ export default function Login() {
             <span className="text-gradient">{t("login.appName")}</span>
           </h1>
           <p className="text-gray-600 text-sm sm:text-base">
-            {isLogin
-              ? t("login.subtitle.login")
-              : t("login.subtitle.register")}
+            {isLogin ? t("login.subtitle.login") : t("login.subtitle.register")}
           </p>
         </div>
 
@@ -120,7 +118,10 @@ export default function Login() {
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor={`${t("login.email.label")}/i`}
+              className="block text-sm font-semibold text-gray-700"
+            >
               {t("login.email.label")}
             </label>
             <div className="relative">
