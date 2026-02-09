@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { useTranslation } from "../i18n";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 interface Appointment {
   id: string;
@@ -35,6 +37,7 @@ export default function Appointments() {
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadAppointments();
@@ -94,7 +97,7 @@ export default function Appointments() {
 
   const bookAppointment = async () => {
     if (!selectedDoctor || !selectedTime || !selectedService) {
-      alert("Please fill all fields");
+      alert(t("appointments.book.validation.missingFields"));
       return;
     }
 
@@ -122,20 +125,23 @@ export default function Appointments() {
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     } catch (error: any) {
-      alert(error.response?.data?.error || "Failed to book appointment");
+      alert(
+        error.response?.data?.error ||
+          t("appointments.book.error.generic"),
+      );
     } finally {
       setBookingLoading(false);
     }
   };
 
   const cancelAppointment = async (id: string) => {
-    if (!confirm("Cancel this appointment?")) return;
+    if (!confirm(t("appointments.cancel.confirm"))) return;
 
     try {
       await api.patch(`/appointments/${id}/cancel`);
       loadAppointments();
     } catch (error) {
-      alert("Failed to cancel appointment");
+      alert(t("appointments.cancel.error"));
     }
   };
 
@@ -165,7 +171,9 @@ export default function Appointments() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600">Loading appointments...</p>
+          <p className="text-lg text-gray-600">
+            {t("appointments.loading")}
+          </p>
         </div>
       </div>
     );
@@ -198,20 +206,25 @@ export default function Appointments() {
               </button>
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-gradient">
-                  My Appointments
+                  {t("appointments.header.title")}
                 </h1>
                 <p className="text-xs text-gray-500">
-                  Manage your healthcare visits
+                  {t("appointments.header.subtitle")}
                 </p>
               </div>
             </div>
-            <span className="text-gray-700">{user?.name}</span>
-            <button
-              onClick={logout}
-              className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-4">
+              <LanguageSwitcher />
+              <span className="text-gray-700 hidden sm:inline">
+                {user?.name}
+              </span>
+              <button
+                onClick={logout}
+                className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                {t("common.logout")}
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -226,8 +239,8 @@ export default function Appointments() {
                 ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105"
                 : "bg-white text-gray-700 hover:bg-gray-50 shadow-md"
             }`}
-          >
-            📋 My Appointments
+            >
+              📋 {t("appointments.view.list")}
           </button>
           <button
             onClick={() => setView("book")}
@@ -236,8 +249,8 @@ export default function Appointments() {
                 ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105"
                 : "bg-white text-gray-700 hover:bg-gray-50 shadow-md"
             }`}
-          >
-            ➕ Book New
+            >
+              ➕ {t("appointments.view.book")}
           </button>
         </div>
 
@@ -262,10 +275,10 @@ export default function Appointments() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  No appointments yet
+                  {t("appointments.empty.title")}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Get started by booking your first appointment
+                  {t("appointments.empty.description")}
                 </p>
                 <button
                   onClick={() => setView("book")}
@@ -284,7 +297,7 @@ export default function Appointments() {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Book Your First Appointment
+                  {t("appointments.empty.cta")}
                 </button>
               </div>
             ) : (
@@ -381,7 +394,7 @@ export default function Appointments() {
                               onClick={() => cancelAppointment(apt.id)}
                               className="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl font-medium transition-colors text-sm"
                             >
-                              Cancel
+                              {t("appointments.cancel.confirm").split("?")[0]}
                             </button>
                           )}
                       </div>
@@ -399,10 +412,10 @@ export default function Appointments() {
             <div className="card p-8">
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-gradient mb-2">
-                  Book an Appointment
+                  {t("appointments.book.title")}
                 </h2>
                 <p className="text-gray-600">
-                  Select your preferred doctor, date, and time slot
+                  {t("appointments.book.subtitle")}
                 </p>
               </div>
 
@@ -410,7 +423,7 @@ export default function Appointments() {
                 {/* Doctor Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Select Healthcare Provider
+                    {t("appointments.book.providerLabel")}
                   </label>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {doctors.map((doc) => (
@@ -445,7 +458,7 @@ export default function Appointments() {
                 {/* Date Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Select Date
+                    {t("appointments.book.dateLabel")}
                   </label>
                   <input
                     type="date"
@@ -461,14 +474,18 @@ export default function Appointments() {
                 {loadingSlots && (
                   <div className="text-center py-8">
                     <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
-                    <p className="text-gray-600">Loading available times...</p>
+                    <p className="text-gray-600">
+                      {t("appointments.book.loadingSlots")}
+                    </p>
                   </div>
                 )}
 
                 {!loadingSlots && availableSlots.length > 0 && (
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Available Time Slots ({availableSlots.length} available)
+                        {t("appointments.book.availableSlotsLabel", {
+                          count: availableSlots.length,
+                        })}
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-60 overflow-y-auto p-1">
                       {availableSlots.map((slot) => (
@@ -507,10 +524,10 @@ export default function Appointments() {
                         />
                       </svg>
                       <p className="text-gray-700 font-medium">
-                        No available slots for this date
+                        {t("appointments.book.noSlots.title")}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
-                        Please try another date
+                        {t("appointments.book.noSlots.description")}
                       </p>
                     </div>
                   )}
@@ -518,14 +535,16 @@ export default function Appointments() {
                 {/* Service Type */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Service Type
+                    {t("appointments.book.serviceTypeLabel")}
                   </label>
                   <select
                     value={selectedService}
                     onChange={(e) => setSelectedService(e.target.value)}
                     className="input-field"
                   >
-                    <option value="">Choose service type...</option>
+                    <option value="">
+                      {t("appointments.book.serviceTypePlaceholder")}
+                    </option>
                     {serviceTypes.map((service) => (
                       <option key={service} value={service}>
                         {service}
@@ -567,7 +586,7 @@ export default function Appointments() {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        Booking...
+                        {t("appointments.book.button.booking")}
                       </>
                     ) : (
                       <>
@@ -584,7 +603,7 @@ export default function Appointments() {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        Confirm Appointment
+                        {t("appointments.book.button.confirm")}
                       </>
                     )}
                   </span>

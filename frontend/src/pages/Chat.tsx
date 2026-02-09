@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { useTranslation } from "../i18n";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 interface Message {
   id?: string;
@@ -19,6 +21,7 @@ export default function Chat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     loadHistory();
@@ -60,7 +63,7 @@ export default function Chat() {
     try {
       const { data } = await api.post("/chat", {
         message: input,
-        language: user?.language || "en",
+        language,
       });
 
       const aiMessage: Message = {
@@ -104,7 +107,9 @@ export default function Chat() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600">Loading your conversation...</p>
+          <p className="text-lg text-gray-600">
+            {t("chat.loadingHistory")}
+          </p>
         </div>
       </div>
     );
@@ -137,12 +142,15 @@ export default function Chat() {
               </button>
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-gradient">
-                  AI Health Assistant
+                  {t("chat.title")}
                 </h1>
-                <p className="text-xs text-gray-500">Powered by GPT-4</p>
+                <p className="text-xs text-gray-500">
+                  {t("chat.subtitle")}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <LanguageSwitcher />
               <button
                 onClick={clearHistory}
                 className="px-3 py-1.5 text-xs sm:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
@@ -160,13 +168,15 @@ export default function Chat() {
                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
-                <span className="hidden sm:inline">Clear</span>
+                <span className="hidden sm:inline">
+                  {t("chat.clear")}
+                </span>
               </button>
               <button
                 onClick={logout}
                 className="px-3 py-1.5 text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               >
-                Logout
+                {t("common.logout")}
               </button>
             </div>
           </div>
@@ -194,50 +204,52 @@ export default function Chat() {
                 </svg>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-                Hello! I'm your AI health assistant 👋
+                {t("chat.empty.title")}
               </h2>
               <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-lg mx-auto">
-                Describe your symptoms and I'll provide personalized health
-                guidance and care recommendations.
+                {t("chat.empty.description")}
               </p>
 
               {/* Quick Prompts */}
               <div className="max-w-2xl mx-auto">
                 <p className="text-sm text-gray-500 mb-3 font-medium">
-                  Try asking:
+                  {t("chat.empty.tryAsking")}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {quickPrompts.map((prompt, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setInput(prompt);
-                        inputRef.current?.focus();
-                      }}
-                      className="p-4 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-300 rounded-xl text-left transition-all duration-200 group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center transition-colors">
-                          <svg
-                            className="w-4 h-4 text-blue-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M13 10V3L4 14h7v7l9-11h-7z"
-                            />
-                          </svg>
+                  {quickPrompts.map((_, index) => {
+                    const prompt = t(`chat.prompt.${index + 1}`);
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setInput(prompt);
+                          inputRef.current?.focus();
+                        }}
+                        className="p-4 bg-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border-2 border-gray-200 hover:border-blue-300 rounded-xl text-left transition-all duration-200 group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center transition-colors">
+                            <svg
+                              className="w-4 h-4 text-blue-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 10V3L4 14h7v7l9-11h-7z"
+                              />
+                            </svg>
+                          </div>
+                          <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
+                            {prompt}
+                          </span>
                         </div>
-                        <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
-                          {prompt}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -355,7 +367,7 @@ export default function Chat() {
                     sendMessage();
                   }
                 }}
-                placeholder="Describe your symptoms..."
+                placeholder={t("chat.input.placeholder")}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 outline-none resize-none text-sm sm:text-base"
                 disabled={loading}
                 rows={1}
@@ -417,7 +429,7 @@ export default function Chat() {
                 clipRule="evenodd"
               />
             </svg>
-            For emergencies, always call <strong>112</strong> immediately
+            {t("chat.emergencyNotice")} <strong>112</strong>
           </p>
         </div>
       </div>

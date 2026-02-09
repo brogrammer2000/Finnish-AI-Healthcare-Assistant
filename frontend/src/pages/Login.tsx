@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../i18n";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +14,7 @@ export default function Login() {
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const { login, register } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +42,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen gradient-bg flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute right-4 top-4 z-20">
+        <LanguageSwitcher />
+      </div>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl float"></div>
@@ -67,12 +73,12 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-            <span className="text-gradient">Healthcare</span> AI
+            <span className="text-gradient">{t("login.appName")}</span>
           </h1>
           <p className="text-gray-600 text-sm sm:text-base">
             {isLogin
-              ? "Welcome back! Sign in to continue"
-              : "Create your account to get started"}
+              ? t("login.subtitle.login")
+              : t("login.subtitle.register")}
           </p>
         </div>
 
@@ -99,14 +105,14 @@ export default function Login() {
           {!isLogin && (
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-700">
-                Full Name
+                {t("login.fullName.label")}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input-field"
-                placeholder="Enter your full name"
+                placeholder={t("login.fullName.placeholder")}
                 required
                 autoFocus={!isLogin}
               />
@@ -115,7 +121,7 @@ export default function Login() {
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              Email Address
+              {t("login.email.label")}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -139,7 +145,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field pl-10"
-                placeholder="you@example.com"
+                placeholder={t("login.email.placeholder")}
                 required
                 autoComplete="email"
               />
@@ -148,7 +154,7 @@ export default function Login() {
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-700">
-              Password
+              {t("login.password.label")}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -190,7 +196,7 @@ export default function Login() {
                     clipRule="evenodd"
                   />
                 </svg>
-                Minimum 6 characters
+                {t("login.password.hint")}
               </p>
             )}
           </div>
@@ -222,11 +228,13 @@ export default function Login() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Processing...
+                  {t("login.button.processing")}
                 </>
               ) : (
                 <>
-                  {isLogin ? "Sign In" : "Create Account"}
+                  {isLogin
+                    ? t("login.button.signIn")
+                    : t("login.button.createAccount")}
                   <svg
                     className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                     fill="none"
@@ -255,9 +263,13 @@ export default function Login() {
             }}
             className="text-blue-600 hover:text-blue-700 font-medium text-sm inline-flex items-center group"
           >
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            {isLogin
+              ? `${t("login.toggle.toRegister.prefix")} `
+              : `${t("login.toggle.toLogin.prefix")} `}
             <span className="ml-1 group-hover:underline">
-              {isLogin ? "Create one" : "Sign in"}
+              {isLogin
+                ? t("login.toggle.toRegister.link")
+                : t("login.toggle.toLogin.link")}
             </span>
             <svg
               className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
@@ -278,18 +290,22 @@ export default function Login() {
         {/* Demo Accounts */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-xs font-semibold text-gray-500 text-center mb-3 uppercase tracking-wide">
-            Quick Test Access
+            {t("login.demo.heading")}
           </p>
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
-              <p className="font-semibold text-blue-900 mb-1">👤 Patient</p>
+              <p className="font-semibold text-blue-900 mb-1">
+                👤 {t("login.demo.patient")}
+              </p>
               <p className="text-blue-700 font-mono text-[10px]">
                 demo@test.com
               </p>
               <p className="text-blue-700 font-mono text-[10px]">demo123</p>
             </div>
             <div className="bg-purple-50 rounded-lg p-3 border border-purple-100">
-              <p className="font-semibold text-purple-900 mb-1">⚙️ Admin</p>
+              <p className="font-semibold text-purple-900 mb-1">
+                ⚙️ {t("login.demo.admin")}
+              </p>
               <p className="text-purple-700 font-mono text-[10px]">
                 admin@healthcare.com
               </p>

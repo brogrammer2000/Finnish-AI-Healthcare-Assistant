@@ -1,9 +1,12 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "../i18n";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export default function Home() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const features = [
     {
@@ -22,11 +25,11 @@ export default function Home() {
           />
         </svg>
       ),
-      title: "AI Health Triage",
-      description: "Get instant symptom assessment and care recommendations",
+      title: t("home.feature.triage.title"),
+      description: t("home.feature.triage.description"),
       gradient: "from-blue-500 to-cyan-500",
       path: "/chat",
-      badge: "24/7 Available",
+      badge: t("home.feature.triage.badge"),
     },
     {
       icon: (
@@ -44,11 +47,11 @@ export default function Home() {
           />
         </svg>
       ),
-      title: "Book Appointments",
-      description: "Schedule visits with available healthcare providers",
+      title: t("home.feature.appointments.title"),
+      description: t("home.feature.appointments.description"),
       gradient: "from-purple-500 to-pink-500",
       path: "/appointments",
-      badge: "Real-time Slots",
+      badge: t("home.feature.appointments.badge"),
     },
     {
       icon: (
@@ -66,20 +69,20 @@ export default function Home() {
           />
         </svg>
       ),
-      title: "Admin Dashboard",
-      description: "Comprehensive appointment and patient management",
+      title: t("home.feature.admin.title"),
+      description: t("home.feature.admin.description"),
       gradient: "from-orange-500 to-red-500",
       path: "/admin",
-      badge: "Admin Only",
+      badge: t("home.feature.admin.badge"),
       adminOnly: true,
     },
   ];
 
   const stats = [
-    { label: "Active Users", value: "2.5K+", icon: "👥" },
-    { label: "Appointments", value: "15K+", icon: "📅" },
-    { label: "Success Rate", value: "98%", icon: "✅" },
-    { label: "Avg. Response", value: "<2s", icon: "⚡" },
+    { label: t("home.stats.activeUsers"), value: "2.5K+", icon: "👥" },
+    { label: t("home.stats.appointments"), value: "15K+", icon: "📅" },
+    { label: t("home.stats.successRate"), value: "98%", icon: "✅" },
+    { label: t("home.stats.responseTime"), value: "<2s", icon: "⚡" },
   ];
 
   return (
@@ -109,11 +112,12 @@ export default function Home() {
                   Healthcare AI
                 </h1>
                 <p className="text-xs text-gray-500">
-                  Finnish Health Assistant
+                  {t("home.subtitle")}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <LanguageSwitcher />
               <div className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {user?.name?.charAt(0).toUpperCase()}
@@ -157,15 +161,14 @@ export default function Home() {
           <div className="inline-block mb-4">
             <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 border border-blue-200">
               <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-              System Online & Ready
+                  {t("home.systemOnline")}
             </span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Welcome back, <span className="text-gradient">{user?.name}!</span>
+            {t("home.hero.title", { name: user?.name ?? "" })}
           </h2>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Your intelligent healthcare companion powered by AI. Get instant
-            medical advice and manage your appointments seamlessly.
+            {t("home.hero.description")}
           </p>
         </div>
 
@@ -227,7 +230,7 @@ export default function Home() {
 
                 {/* Arrow */}
                 <div className="flex items-center text-blue-600 font-semibold group-hover:gap-3 gap-2 transition-all">
-                  Get Started
+                  {t("home.feature.cta")}
                   <svg
                     className="w-5 h-5 group-hover:translate-x-2 transition-transform"
                     fill="none"
@@ -267,13 +270,10 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold mb-2">
-                🇫🇮 Built for Finland's Healthcare System
+                {t("home.banner.title")}
               </h3>
               <p className="text-blue-100 leading-relaxed">
-                This platform addresses real challenges in Finnish healthcare:
-                reducing wait times, improving patient routing, and supporting
-                multilingual care. Designed with GDPR compliance and
-                integration-ready for national health systems.
+                {t("home.banner.body")}
               </p>
             </div>
           </div>
