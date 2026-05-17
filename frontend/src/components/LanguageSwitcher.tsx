@@ -1,74 +1,62 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslation, type Language } from "../i18n";
 
-const LANGUAGE_OPTIONS: { code: Language; labelKey: string }[] = [
-  { code: "en", labelKey: "lang.english" },
-  { code: "fi", labelKey: "lang.finnish" },
-  { code: "sv", labelKey: "lang.swedish" },
+const OPTIONS: { code: Language; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "fi", label: "Suomi" },
+  { code: "sv", label: "Svenska" },
 ];
 
 export function LanguageSwitcher() {
-  const { language, setLanguage, t } = useTranslation();
+  const { language, setLanguage } = useTranslation();
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const currentLabel =
-    LANGUAGE_OPTIONS.find((o) => o.code === language)?.code.toUpperCase() ??
-    language.toUpperCase();
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const current = OPTIONS.find((o) => o.code === language);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 bg-white/90 shadow-sm hover:bg-gray-50 text-gray-600"
-        aria-label={t("lang.label")}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#E4E7EC] bg-white text-[#374151] text-sm font-medium hover:border-[#006B6B] hover:text-[#006B6B] transition-colors"
       >
-        <span className="flex items-center justify-center w-4 h-4">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 3c4.97 0 9 3.582 9 8s-4.03 8-9 8-9-3.582-9-8 4.03-8 9-8z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 11h18M12 3c2.5 2.5 3.75 5.167 3.75 8S14.5 16.5 12 19c-2.5-2.5-3.75-5.167-3.75-8S9.5 5.5 12 3z"
-            />
-          </svg>
-        </span>
-        <span className="w-px h-4 bg-gray-300" />
-        <span className="text-xs font-semibold tracking-wide">
-          {currentLabel}
-        </span>
+        <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" strokeWidth="1.8" />
+          <path d="M3 12h18M12 3c2.5 3 4 6 4 9s-1.5 6-4 9M12 3c-2.5 3-4 6-4 9s1.5 6 4 9" strokeWidth="1.8" />
+        </svg>
+        <span>{current?.label ?? language.toUpperCase()}</span>
+        <svg className="w-3 h-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50">
-          {LANGUAGE_OPTIONS.map((option) => (
+        <div className="absolute right-0 mt-1 w-36 bg-white border border-[#E4E7EC] rounded-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] py-1 z-50 animate-fadeIn">
+          {OPTIONS.map((opt) => (
             <button
-              key={option.code}
+              key={opt.code}
               type="button"
-              onClick={() => {
-                setLanguage(option.code);
-                setOpen(false);
-              }}
-              className={`flex w-full items-center justify-between px-3 py-1.5 text-xs sm:text-sm text-left hover:bg-gray-50 ${
-                language === option.code
-                  ? "font-semibold text-blue-600"
-                  : "text-gray-700"
+              onClick={() => { setLanguage(opt.code); setOpen(false); }}
+              className={`flex w-full items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
+                language === opt.code
+                  ? "text-[#006B6B] font-semibold bg-[#F0F9F9]"
+                  : "text-[#374151] hover:bg-[#F9FAFB]"
               }`}
             >
-              <span>{t(option.labelKey)}</span>
-              {language === option.code && (
-                <span className="text-blue-500 text-xs">✓</span>
+              {opt.label}
+              {language === opt.code && (
+                <svg className="w-3.5 h-3.5 text-[#006B6B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
               )}
             </button>
           ))}
@@ -77,5 +65,3 @@ export function LanguageSwitcher() {
     </div>
   );
 }
-
-

@@ -1,229 +1,312 @@
 @import "tailwindcss";
 
 @layer base {
-  /* Modern font stack */
+  html {
+    font-size: 15px;
+    scroll-behavior: smooth;
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-      "Helvetica Neue", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #F7F8FA;
+    color: #111827;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  * {
+    box-sizing: border-box;
   }
 
-  ::-webkit-scrollbar-track {
-    background: #f1f5f9;
-  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #F7F8FA; }
+  ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #3b82f6, #2563eb);
-    border-radius: 5px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  @supports (-webkit-touch-callout: none) {
+    input, select, textarea { font-size: 16px; }
   }
 }
 
 @layer components {
-  /* Animated gradient background */
-  .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 200% 200%;
-    animation: gradient 15s ease infinite;
+  /* ── Cards ──────────────────────────────────────────── */
+  .hds-card {
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  .hds-card-sm {
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
-  /* Glass morphism effect */
-  .glass {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  /* ── Buttons ─────────────────────────────────────────── */
+  .hds-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+    line-height: 1.4;
   }
 
-  /* Fancy button */
-  .btn-primary {
-    background: linear-gradient(to right, #2563eb, #1d4ed8);
-    @apply text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200;
+  .hds-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .hds-btn-primary {
+    @apply hds-btn;
+    background-color: #006B6B;
+    color: #FFFFFF;
+  }
+  .hds-btn-primary:hover:not(:disabled) { background-color: #005555; }
+
+  .hds-btn-secondary {
+    @apply hds-btn;
+    background-color: #FFFFFF;
+    color: #006B6B;
+    border: 1px solid #006B6B;
+  }
+  .hds-btn-secondary:hover:not(:disabled) { background-color: #F0F9F9; }
+
+  .hds-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.14s ease, color 0.14s ease;
+  }
+  .hds-btn-ghost:hover { background-color: #F3F4F6; color: #111827; }
+
+  /* ── Inputs ──────────────────────────────────────────── */
+  /* Bottom-border only — for login form */
+  .hds-input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1.5px solid #D1D5DB;
+    border-radius: 0;
+    background: transparent;
+    font-size: 15px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.14s ease;
+    line-height: 1.5;
+  }
+  .hds-input:focus { border-bottom-color: #006B6B; }
+  .hds-input::placeholder { color: #9CA3AF; }
+
+  /* Bordered — for search, booking forms */
+  .hds-input-bordered {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #E4E7EC;
+    border-radius: 6px;
+    background: #FFFFFF;
+    font-size: 15px;
+    color: #111827;
+    outline: none;
+    transition: border-color 0.14s ease;
+    line-height: 1.5;
+  }
+  .hds-input-bordered:focus { border-color: #006B6B; }
+
+  /* ── Status badges ───────────────────────────────────── */
+  .badge-confirmed {
+    display: inline-flex;
+    align-items: center;
+    background-color: #F0F9F9;
+    color: #006B6B;
+    border: 1px solid #99D0D0;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
   }
 
-  .btn-secondary {
-    @apply bg-white text-gray-700 font-medium py-3 px-6 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 transition-all duration-200;
+  .badge-cancelled {
+    display: inline-flex;
+    align-items: center;
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border: 1px solid #FCA5A5;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
   }
 
-  /* Card with hover effect */
-  .card {
-    @apply bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
+  .badge-completed {
+    display: inline-flex;
+    align-items: center;
+    background-color: #F9FAFB;
+    color: #6B7280;
+    border: 1px solid #D1D5DB;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
   }
 
-  /* Input fields */
-  .input-field {
-    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 outline-none;
-  }
-
-  /* Floating animation */
-  .float {
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  /* Pulse animation for loading */
-  .pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  /* Shimmer effect */
-  .shimmer {
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
+  /* ── Skeleton ────────────────────────────────────────── */
+  .skeleton {
+    background: linear-gradient(90deg, #E4E7EC 25%, #F3F4F6 50%, #E4E7EC 75%);
     background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+    animation: skeleton-sweep 1.5s infinite;
+    border-radius: 4px;
   }
 
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+  /* ── Streaming cursor ────────────────────────────────── */
+  .streaming-cursor::after {
+    content: '▋';
+    display: inline;
+    color: #006B6B;
+    animation: blink-cursor 1s step-end infinite;
+    margin-left: 1px;
   }
 
-  /* Status badges */
-  .badge-success {
-    background: linear-gradient(to right, #4ade80, #22c55e);
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
+  /* ── Admin sidebar nav ───────────────────────────────── */
+  .sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    border-left: 3px solid transparent;
+    margin-left: -1px;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  .sidebar-nav-item:hover { background-color: #F0F9F9; color: #374151; border-left-color: #B2D8D8; }
+  .sidebar-nav-item.active { background-color: #F0F9F9; color: #006B6B; border-left-color: #006B6B; font-weight: 600; }
+
+  /* ── Chat timeline ───────────────────────────────────── */
+  .msg-assistant {
+    border-left: 3px solid #006B6B;
+    padding-left: 16px;
   }
 
-  .badge-warning {
-    background: linear-gradient(to right, #facc15, #eab308);
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
+  .msg-user {
+    background-color: #F0F9F9;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-left: auto;
+    max-width: 72%;
   }
 
-  .badge-danger {
-    background: linear-gradient(to right, #f87171, #ef4444);
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
+  /* ── Symptom tag ─────────────────────────────────────── */
+  .symptom-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #F0F9F9;
+    border: 1px solid #99D0D0;
+    color: #006B6B;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 4px;
   }
 
-  .badge-info {
-    background: linear-gradient(to right, #60a5fa, #3b82f6);
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white shadow-sm;
+  /* ── Quick reply chip ────────────────────────────────── */
+  .quick-reply {
+    background-color: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    color: #374151;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    white-space: nowrap;
+  }
+  .quick-reply:hover { border-color: #006B6B; color: #006B6B; background-color: #F0F9F9; }
+
+  /* ── Calendar slots ──────────────────────────────────── */
+  .cal-slot {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 0;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    transition: background-color 0.12s ease;
+  }
+
+  .cal-slot-available {
+    @apply cal-slot;
+    background-color: #006B6B;
+    color: #FFFFFF;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .cal-slot-available:hover { background-color: #005555; }
+  .cal-slot-available.selected { background-color: #003F3F; border-color: #006B6B; }
+
+  .cal-slot-unavailable {
+    @apply cal-slot;
+    background-color: #F3F4F6;
+    color: #D1D5DB;
+    cursor: not-allowed;
+    border: 2px solid transparent;
+  }
+
+  /* ── Step progress ───────────────────────────────────── */
+  .step-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
   }
 }
 
-@layer utilities {
-  /* Safe area for mobile devices */
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  /* Prevent zoom on iOS */
-  @supports (-webkit-touch-callout: none) {
-    input,
-    select,
-    textarea {
-      font-size: 16px;
-    }
-  }
-
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Better touch targets */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Text gradient */
-  .text-gradient {
-    background: linear-gradient(to right, #2563eb, #9333ea);
-    @apply bg-clip-text text-transparent;
-  }
-
-  /* Shadow styles */
-  .shadow-soft {
-    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07),
-      0 10px 20px -2px rgba(0, 0, 0, 0.04);
-  }
-
-  .shadow-hard {
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.2);
-  }
-  @keyframes shake {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-10px);
-    }
-    75% {
-      transform: translateX(10px);
-    }
-  }
-
-  .animate-shake {
-    animation: shake 0.5s ease-in-out;
-  }
-  /* Additional animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-slideIn {
-    animation: slideIn 0.3s ease-out;
-  }
+/* ── Keyframes ───────────────────────────────────────────── */
+@keyframes skeleton-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.2s ease-out; }

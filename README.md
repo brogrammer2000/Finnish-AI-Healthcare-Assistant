@@ -280,22 +280,12 @@ Comprehensive overview with statistics, search, and appointment management.
 
 ---
 
-## 🎯 Impact & Metrics
+## What this demonstrates
 
-### Projected Benefits
-
-- **40% reduction** in inappropriate emergency visits
-- **24/7 availability** vs traditional 8am-4pm phone hours
-- **60% decrease** in phone inquiry volume
-- **Cost savings** from reduced no-shows and better resource allocation
-
-### Technical Achievements
-
-- **100% TypeScript** coverage for type safety
-- **RESTful API** design following industry standards
-- **Mobile-first** responsive design
-- **GDPR-compliant** data handling
-- **Production-ready** error handling and validation
+- **Streaming AI responses** — the chat endpoint uses OpenAI's streaming API and sends tokens to the browser via Server-Sent Events, so responses render word-by-word instead of after a full round-trip
+- **Full-stack TypeScript** — shared type discipline across a React frontend (Vite) and an Express backend, with Prisma providing typed database access end-to-end
+- **Role-based authentication** — JWT-based auth with two roles (patient, admin); protected routes on both the API and the client, with the admin dashboard only reachable by admin-role tokens
+- **Multilingual support** — a custom i18n system (no third-party library) serves English, Finnish, and Swedish with runtime switching, browser-language detection, and `localStorage` persistence
 
 ---
 
