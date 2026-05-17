@@ -69,10 +69,10 @@ export default function Login() {
           </h1>
           <p className="text-white/70 text-[15px] leading-relaxed">
             {language === "fi"
-              ? "Saa oirearviosi, varaa aika ja hallinnoi terveyttäsi — turvallisesti ja nopeasti."
+              ? "Saa oirearviosi, varaa aika ja hallinnoi terveyttäsi. Turvallisesti ja nopeasti."
               : language === "sv"
-              ? "Få en symtombedömning, boka tid och hantera din hälsa — säkert och snabbt."
-              : "Get a symptom assessment, book appointments, and manage your health — securely and quickly."}
+              ? "Få en symtombedömning, boka tid och hantera din hälsa. Säkert och snabbt."
+              : "Get a symptom assessment, book appointments, and manage your health. Securely and quickly."}
           </p>
         </div>
 

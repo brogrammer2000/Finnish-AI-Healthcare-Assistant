@@ -65,7 +65,7 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="text-[15px] font-semibold text-[#111827] leading-none">Healthcare AI</p>
+              <p className="text-[15px] font-semibold text-[#111827] leading-none">{t("login.appName")}</p>
               <p className="text-[11px] text-[#9CA3AF] leading-none mt-0.5">{t("home.subtitle")}</p>
             </div>
           </div>

@@ -34,7 +34,7 @@ const translations: Record<Language, TranslationDict> = {
     "auth.error.generic": "Authentication failed",
 
     // Login
-    "login.appName": "Healthcare AI",
+    "login.appName": "SisuCare",
     "login.subtitle.login": "Welcome back! Sign in to continue",
     "login.subtitle.register": "Create your account to get started",
     "login.fullName.label": "Full Name",
@@ -172,7 +172,7 @@ const translations: Record<Language, TranslationDict> = {
     "auth.error.generic": "Tunnistautuminen epäonnistui",
 
     // Login
-    "login.appName": "Healthcare AI",
+    "login.appName": "SisuCare",
     "login.subtitle.login":
       "Tervetuloa takaisin! Kirjaudu jatkaaksesi",
     "login.subtitle.register":
@@ -315,7 +315,7 @@ const translations: Record<Language, TranslationDict> = {
     "auth.error.generic": "Autentisering misslyckades",
 
     // Login
-    "login.appName": "Healthcare AI",
+    "login.appName": "SisuCare",
     "login.subtitle.login":
       "Välkommen tillbaka! Logga in för att fortsätta",
     "login.subtitle.register":
