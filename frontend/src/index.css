@@ -48,7 +48,7 @@
   }
 
   /* ── Buttons ─────────────────────────────────────────── */
-  .hds-btn {
+  .hds-btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -61,24 +61,30 @@
     cursor: pointer;
     transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
     line-height: 1.4;
-  }
-
-  .hds-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-  .hds-btn-primary {
-    @apply hds-btn;
     background-color: #006B6B;
     color: #FFFFFF;
   }
   .hds-btn-primary:hover:not(:disabled) { background-color: #005555; }
+  .hds-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .hds-btn-secondary {
-    @apply hds-btn;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+    line-height: 1.4;
     background-color: #FFFFFF;
     color: #006B6B;
     border: 1px solid #006B6B;
   }
   .hds-btn-secondary:hover:not(:disabled) { background-color: #F0F9F9; }
+  .hds-btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .hds-btn-ghost {
     display: inline-flex;
@@ -250,7 +256,7 @@
   .quick-reply:hover { border-color: #006B6B; color: #006B6B; background-color: #F0F9F9; }
 
   /* ── Calendar slots ──────────────────────────────────── */
-  .cal-slot {
+  .cal-slot-available {
     font-size: 11px;
     font-weight: 500;
     padding: 4px 0;
@@ -259,10 +265,6 @@
     width: 100%;
     display: block;
     transition: background-color 0.12s ease;
-  }
-
-  .cal-slot-available {
-    @apply cal-slot;
     background-color: #006B6B;
     color: #FFFFFF;
     cursor: pointer;
@@ -272,7 +274,14 @@
   .cal-slot-available.selected { background-color: #003F3F; border-color: #006B6B; }
 
   .cal-slot-unavailable {
-    @apply cal-slot;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 0;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    transition: background-color 0.12s ease;
     background-color: #F3F4F6;
     color: #D1D5DB;
     cursor: not-allowed;
