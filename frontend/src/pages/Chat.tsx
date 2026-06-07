@@ -51,9 +51,13 @@ export default function Chat() {
   }, [messages]);
 
   const showBookingCTA = useMemo(() => {
-    const lastAI = [...messages].reverse().find(m => m.role === "assistant");
-    if (!lastAI?.content) return false;
-    return BOOKING_KEYWORDS.some(kw => lastAI.content.toLowerCase().includes(kw));
+    const reversed = [...messages].reverse();
+    const lastAI = reversed.find(m => m.role === "assistant");
+    const lastUser = reversed.find(m => m.role === "user");
+    const checkContent = (content: string) =>
+      BOOKING_KEYWORDS.some(kw => content.toLowerCase().includes(kw));
+    return (lastAI?.content ? checkContent(lastAI.content) : false) ||
+           (lastUser?.content ? checkContent(lastUser.content) : false);
   }, [messages]);
 
   const sendMessage = async (text?: string) => {

@@ -1,13 +1,10 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import { authenticateToken, AuthRequest } from "../middleware/auth";
+import prisma from "../lib/prisma";
 
 const router = Router();
-const prisma = new PrismaClient();
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let anthropic: Anthropic;
 
 // Detect language from message content, falling back to the UI language setting.
 // å never appears in standard Finnish — strong Swedish signal.
@@ -68,7 +65,7 @@ router.post("/", authenticateToken, async (req: AuthRequest, res) => {
     );
 
     // System prompt for healthcare triage
-    const systemPrompt = `You are a helpful healthcare triage assistant for a Finnish clinic.
+    const systemPrompt = `You are a helpful healthcare triage assistant for a Finnish clinic app.
 
 Your role is to:
 1. Listen to patient symptoms empathetically
@@ -76,6 +73,13 @@ Your role is to:
 3. Recommend appropriate doctor type (General Practitioner, Nurse, or Specialist)
 4. Provide brief self-care advice when appropriate
 5. Always tell patients to call 112 for life-threatening emergencies
+
+BOOKING APPOINTMENTS: This app has a fully built-in appointment booking system. Patients book directly here in the app — they do NOT call a clinic, visit in person, or use any external website. You must NEVER tell patients to call, visit, or use an outside system.
+
+When a patient asks to book or you recommend a doctor visit, say exactly this kind of thing:
+"You can book an appointment right here in the app! Click the **Book Appointment** button appearing below this message, or go to the Appointments section in the menu."
+
+That is all they need to do. The app handles everything.
 
 IMPORTANT: You MUST respond entirely in ${languageName}. The patient has written in ${languageName} — match their language exactly. Do not switch languages or mix languages mid-response.
 
@@ -99,26 +103,36 @@ Be warm, professional, and clear. Keep responses concise (2-3 short paragraphs m
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
 
-    // Stream from OpenAI
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    // Lazy-init Anthropic client so ANTHROPIC_API_KEY is read after dotenv loads
+    if (!anthropic) {
+      anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    }
+
+    // Stream from Anthropic
+    const stream = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 500,
+      temperature: 0.7,
+      system: systemPrompt,
       messages: [
-        { role: "system", content: systemPrompt },
         ...conversationHistory,
         { role: "user", content: message },
       ],
-      temperature: 0.7,
-      max_tokens: 500,
       stream: true,
     });
 
     let fullResponse = "";
 
-    for await (const chunk of stream) {
-      const token = chunk.choices[0]?.delta?.content ?? "";
-      if (token) {
-        fullResponse += token;
-        res.write(`data: ${JSON.stringify({ token })}\n\n`);
+    for await (const event of stream) {
+      if (
+        event.type === "content_block_delta" &&
+        event.delta.type === "text_delta"
+      ) {
+        const token = event.delta.text;
+        if (token) {
+          fullResponse += token;
+          res.write(`data: ${JSON.stringify({ token })}\n\n`);
+        }
       }
     }
 
