@@ -15,6 +15,7 @@ model User {
   name          String
   role          String        @default("patient")
   language      String        @default("en")
+  profileImage  String?       @db.Text
   createdAt     DateTime      @default(now())
   appointments  Appointment[]
   messages      ChatMessage[]

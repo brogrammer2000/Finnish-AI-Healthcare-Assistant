@@ -1,9 +1,19 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import multer from "multer";
 import prisma from "../lib/prisma";
 
 const router = Router();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) cb(null, true);
+    else cb(new Error("Only image files are allowed"));
+  },
+});
 
 // Register
 router.post("/register", async (req, res) => {
@@ -53,6 +63,7 @@ router.post("/register", async (req, res) => {
         name: user.name,
         role: user.role,
         language: user.language,
+        profileImage: user.profileImage ?? null,
       },
     });
   } catch (error) {
@@ -102,6 +113,7 @@ router.post("/login", async (req, res) => {
         name: user.name,
         role: user.role,
         language: user.language,
+        profileImage: user.profileImage ?? null,
       },
     });
   } catch (error) {
@@ -132,6 +144,7 @@ router.get("/me", async (req, res) => {
         name: true,
         role: true,
         language: true,
+        profileImage: true,
       },
     });
 
@@ -142,6 +155,44 @@ router.get("/me", async (req, res) => {
     res.json({ user });
   } catch (error) {
     res.status(403).json({ error: "Invalid token" });
+  }
+});
+
+// Upload avatar
+router.post("/avatar", upload.single("avatar"), async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ error: "Access token required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No image file provided" });
+    }
+
+    const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+    const user = await prisma.user.update({
+      where: { id: decoded.id },
+      data: { profileImage: base64 },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        language: true,
+        profileImage: true,
+      },
+    });
+
+    res.json({ user });
+  } catch (error) {
+    console.error("Avatar upload error:", error);
+    res.status(500).json({ error: "Upload failed" });
   }
 });
 

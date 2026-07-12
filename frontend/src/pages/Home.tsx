@@ -1,12 +1,37 @@
+import { useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "../i18n";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import api from "../services/api";
 
 export default function Home() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleAvatarClick = () => fileInputRef.current?.click();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append("avatar", file);
+    setUploading(true);
+    try {
+      const { data } = await api.post("/auth/avatar", form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      updateUser({ profileImage: data.user.profileImage });
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
 
   const features = [
     {
@@ -74,9 +99,45 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-[#E4E7EC]">
-              <div className="w-7 h-7 bg-[#006B6B] rounded flex items-center justify-center text-white text-[12px] font-bold flex-shrink-0">
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
+              <button
+                onClick={handleAvatarClick}
+                disabled={uploading}
+                title="Change profile picture"
+                className="relative w-7 h-7 rounded overflow-hidden flex-shrink-0 group focus:outline-none focus:ring-2 focus:ring-[#006B6B]"
+              >
+                {user?.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#006B6B] flex items-center justify-center text-white text-[12px] font-bold">
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  {uploading ? (
+                    <svg className="w-3 h-3 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
+                </div>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
               <div className="leading-none">
                 <p className="text-[13px] font-semibold text-[#111827]">{user?.name}</p>
                 <p className="text-[11px] text-[#9CA3AF] capitalize">{user?.role}</p>
