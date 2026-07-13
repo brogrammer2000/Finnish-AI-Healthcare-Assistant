@@ -102,6 +102,9 @@ Be warm, professional, and clear. Keep responses concise (2-3 short paragraphs m
 
     let fullResponse = "";
 
+    // Forward each text delta to the browser as it arrives (SSE) while also
+    // accumulating the full text, so the user sees tokens live and we still
+    // have the complete reply to persist once the stream ends.
     for await (const event of stream) {
       if (
         event.type === "content_block_delta" &&
@@ -118,7 +121,9 @@ Be warm, professional, and clear. Keep responses concise (2-3 short paragraphs m
     res.write("data: [DONE]\n\n");
     res.end();
 
-    // Persist both messages after stream completes
+    // Persist only after the stream completes: the assistant row needs the
+    // full text, and writing mid-stream would leave a partial reply if the
+    // client disconnects. Trade-off: a crash before this line loses the turn.
     await prisma.chatMessage.createMany({
       data: [
         { userId: req.user!.id, role: "user", content: message },

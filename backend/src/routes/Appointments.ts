@@ -4,7 +4,9 @@ import prisma from '../lib/prisma';
 
 const router = Router();
 
-// Hardcoded doctors and time slots for simplicity
+// Doctors, service types, and slots are hardcoded constants rather than DB
+// rows — the roster is small and fixed, so a table would add migrations and
+// joins without buying anything. Availability is derived on the fly instead.
 const DOCTORS = [
   { id: 'dr-virtanen', name: 'Dr. Virtanen', specialty: 'General Practitioner' },
   { id: 'dr-korhonen', name: 'Dr. Korhonen', specialty: 'General Practitioner' },
@@ -66,6 +68,10 @@ router.get('/available-slots', authenticateToken, async (req: AuthRequest, res) 
       select: { datetime: true }
     });
 
+    // Availability = every generated slot minus the ones already booked.
+    // Compared as ISO strings so identical instants match regardless of Date
+    // object identity; cancelled appointments are excluded by the query above,
+    // so a cancelled slot correctly reopens for booking.
     const bookedTimes = bookedAppointments.map(apt => apt.datetime.toISOString());
     const availableSlots = allSlots.filter(slot => !bookedTimes.includes(slot));
 

@@ -123,6 +123,10 @@ router.post("/login", async (req, res) => {
 });
 
 // Get current user (protected route)
+// Note: /me and /avatar verify the JWT inline instead of using the shared
+// authenticateToken middleware. They only need the `id` claim (not the full
+// req.user the middleware builds) and return 403 on any failure, so the extra
+// hop isn't worth it here — but keep both paths in sync if token logic changes.
 router.get("/me", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
@@ -174,6 +178,9 @@ router.post("/avatar", upload.single("avatar"), async (req, res) => {
       return res.status(400).json({ error: "No image file provided" });
     }
 
+    // Store the avatar as a base64 data URI directly in the User row rather
+    // than in object storage: keeps the app dependency-free and the whole user
+    // fetchable in one query, at the cost of a larger row (multer caps it at 2MB).
     const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
     const user = await prisma.user.update({
