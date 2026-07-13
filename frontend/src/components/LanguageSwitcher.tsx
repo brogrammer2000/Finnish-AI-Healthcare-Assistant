@@ -26,6 +26,7 @@ export function LanguageSwitcher() {
     <div className="relative" ref={ref}>
       <button
         type="button"
+        aria-label="Language"
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#E4E7EC] bg-white text-[#374151] text-sm font-medium hover:border-[#006B6B] hover:text-[#006B6B] transition-colors"
       >

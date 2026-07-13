@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import { useTranslation } from "../i18n";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { shouldShowBookingCTA } from "../lib/bookingIntent";
 
 interface Message {
   id?: string;
@@ -12,7 +13,6 @@ interface Message {
   timestamp?: Date;
 }
 
-const BOOKING_KEYWORDS = ["book", "appointment", "varaa", "aika", "boka", "tid", "doctor", "lääkäri", "läkare", "schedule"];
 const SYMPTOM_RE = /\b(fever|feber|kuume|headache|päänsärky|huvudvärk|cough|hosta|yskä|pain|kipua|värk|nausea|dizziness|fatigue|väsymys)\b/gi;
 
 export default function Chat() {
@@ -50,15 +50,7 @@ export default function Chat() {
     return Array.from(tags).slice(0, 6);
   }, [messages]);
 
-  const showBookingCTA = useMemo(() => {
-    const reversed = [...messages].reverse();
-    const lastAI = reversed.find(m => m.role === "assistant");
-    const lastUser = reversed.find(m => m.role === "user");
-    const checkContent = (content: string) =>
-      BOOKING_KEYWORDS.some(kw => content.toLowerCase().includes(kw));
-    return (lastAI?.content ? checkContent(lastAI.content) : false) ||
-           (lastUser?.content ? checkContent(lastUser.content) : false);
-  }, [messages]);
+  const showBookingCTA = useMemo(() => shouldShowBookingCTA(messages), [messages]);
 
   const sendMessage = async (text?: string) => {
     const messageText = text ?? input;

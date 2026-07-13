@@ -4,7 +4,7 @@
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success)](https://finnish-ai-healthcare-assistant.vercel.app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18-61dafb)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-19-61dafb)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-Express-green)](https://expressjs.com/)
 
 **🔗 Live Demo:** [https://finnish-ai-healthcare-assistant.vercel.app](https://finnish-ai-healthcare-assistant.vercel.app)
@@ -58,7 +58,7 @@ An intelligent healthcare platform that:
 
 - **🤖 AI Health Assistant**
 
-  - Natural language symptom assessment using GPT-4
+  - Natural language symptom assessment using Claude (Anthropic)
   - Intelligent triage with urgency classification
   - Evidence-based care recommendations
   - Conversation history for continuity of care
@@ -96,7 +96,7 @@ An intelligent healthcare platform that:
 
 ### Frontend
 
-- **React 18** - Modern UI library
+- **React 19** - Modern UI library
 - **TypeScript** - Type-safe development
 - **Vite** - Fast build tooling
 - **Tailwind CSS** - Utility-first styling
@@ -115,7 +115,7 @@ An intelligent healthcare platform that:
 
 ### AI & External Services
 
-- **OpenAI GPT-4** - Natural language processing
+- **Anthropic Claude** (`claude-haiku-4-5`) - Natural language processing
 - **Railway** - Backend hosting
 - **Vercel** - Frontend hosting
 - **Supabase** - Database hosting
@@ -135,8 +135,8 @@ An intelligent healthcare platform that:
                                      │ API Calls
                                      ▼
                             ┌─────────────────┐
-                            │   OpenAI API    │
-                            │   (GPT-4o-mini) │
+                            │  Anthropic API  │
+                            │ (Claude Haiku)  │
                             └─────────────────┘
 
 Key Design Decisions:
@@ -179,7 +179,7 @@ Password: admin123
 
 - Node.js 18+
 - PostgreSQL (or Supabase account)
-- OpenAI API key
+- Anthropic API key
 
 ### Setup
 
@@ -198,7 +198,7 @@ npm install
 
 # Create .env file
 cp .env.example .env
-# Add your DATABASE_URL, JWT_SECRET, and OPENAI_API_KEY
+# Add your DATABASE_URL, JWT_SECRET, and ANTHROPIC_API_KEY
 
 # Run database migrations
 npx prisma migrate dev
@@ -282,7 +282,7 @@ Comprehensive overview with statistics, search, and appointment management.
 
 ## What this demonstrates
 
-- **Streaming AI responses** — the chat endpoint uses OpenAI's streaming API and sends tokens to the browser via Server-Sent Events, so responses render word-by-word instead of after a full round-trip
+- **Streaming AI responses** — the chat endpoint uses Anthropic's streaming API (Claude) and sends tokens to the browser via Server-Sent Events, so responses render word-by-word instead of after a full round-trip
 - **Full-stack TypeScript** — shared type discipline across a React frontend (Vite) and an Express backend, with Prisma providing typed database access end-to-end
 - **Role-based authentication** — JWT-based auth with two roles (patient, admin); protected routes on both the API and the client, with the admin dashboard only reachable by admin-role tokens
 - **Multilingual support** — a custom i18n system (no third-party library) serves English, Finnish, and Swedish with runtime switching, browser-language detection, and `localStorage` persistence

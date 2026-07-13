@@ -11,16 +11,17 @@ describe("LanguageSwitcher", () => {
     renderWithProviders(<LanguageSwitcher />);
 
     const button = screen.getByRole("button", { name: /language/i });
-    // Default language should be EN-like (en / browser)
-    expect(button).toHaveTextContent(/EN|FI|SV/);
+    // Trigger shows the current language's native label
+    expect(button).toHaveTextContent(/English|Suomi|Svenska/);
 
     // Open dropdown
     fireEvent.click(button);
 
-    // Options rendered
-    expect(screen.getByText(/English/i)).toBeInTheDocument();
-    expect(screen.getByText(/Finnish/i)).toBeInTheDocument();
-    expect(screen.getByText(/Swedish/i)).toBeInTheDocument();
+    // Options rendered (labels are the native language names). "English" also
+    // appears in the trigger as the current language, so it's non-unique.
+    expect(screen.getAllByText("English").length).toBeGreaterThan(0);
+    expect(screen.getByText("Suomi")).toBeInTheDocument();
+    expect(screen.getByText("Svenska")).toBeInTheDocument();
   });
 
   it("changes language label when selecting an option", () => {
@@ -29,11 +30,11 @@ describe("LanguageSwitcher", () => {
     const button = screen.getByRole("button", { name: /language/i });
     fireEvent.click(button);
 
-    const finnishOption = screen.getByText(/Finnish/i);
+    const finnishOption = screen.getByText("Suomi");
     fireEvent.click(finnishOption);
 
-    // Button label updates to FI
-    expect(button).toHaveTextContent("FI");
+    // Button label updates to the selected language's native name
+    expect(button).toHaveTextContent("Suomi");
   });
 });
 

@@ -37,7 +37,7 @@ describe("Home page", () => {
     const langButton = screen.getByRole("button", { name: /Language/i });
     fireEvent.click(langButton);
 
-    const swedishOption = screen.getByText(/Swedish/i);
+    const swedishOption = screen.getByText("Svenska");
     fireEvent.click(swedishOption);
 
     expect(
