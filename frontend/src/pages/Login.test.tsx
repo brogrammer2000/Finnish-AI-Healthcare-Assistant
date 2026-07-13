@@ -30,7 +30,7 @@ describe("Login page", () => {
     renderLogin();
 
     expect(
-      screen.getByRole("heading", { name: /Healthcare AI/i }),
+      screen.getByRole("heading", { name: /Intelligent health services/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Welcome back! Sign in to continue/i),
