@@ -25,6 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  // Seed token from localStorage so a page refresh keeps the user signed in
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const { data } = await api.get("/auth/me");
           setUser(data.user);
         } catch (error) {
+          // Token is invalid/expired — drop it so the user is treated as logged out
           console.error("Failed to load user:", error);
           localStorage.removeItem("token");
           setToken(null);
@@ -67,12 +69,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(data.user);
   };
 
+  // Clear persisted token and in-memory auth state
   const logout = () => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
   };
 
+  // Merge partial updates (e.g. new avatar) into the current user without a refetch
   const updateUser = (updates: Partial<User>) => {
     setUser((prev) => (prev ? { ...prev, ...updates } : prev));
   };
@@ -86,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Hook for consuming auth state; guards against use outside the provider
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

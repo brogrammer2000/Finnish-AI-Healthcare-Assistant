@@ -35,12 +35,14 @@ router.post("/", authenticateToken, async (req: AuthRequest, res) => {
     // Detect language from message content; fall back to the UI language setting
     const resolvedLanguage = detectLanguage(message, language);
     const languageName =
-      resolvedLanguage === "fi" ? "Finnish"
-      : resolvedLanguage === "sv" ? "Swedish"
-      : "English";
+      resolvedLanguage === "fi"
+        ? "Finnish"
+        : resolvedLanguage === "sv"
+          ? "Swedish"
+          : "English";
 
     console.log(
-      `[Chat] language param="${language}" detected="${resolvedLanguage}" message="${message.slice(0, 60)}"`
+      `[Chat] language param="${language}" detected="${resolvedLanguage}" message="${message.slice(0, 60)}"`,
     );
 
     // System prompt for healthcare triage
@@ -93,10 +95,7 @@ Be warm, professional, and clear. Keep responses concise (2-3 short paragraphs m
       max_tokens: 500,
       temperature: 0.7,
       system: systemPrompt,
-      messages: [
-        ...conversationHistory,
-        { role: "user", content: message },
-      ],
+      messages: [...conversationHistory, { role: "user", content: message }],
       stream: true,
     });
 
@@ -123,7 +122,7 @@ Be warm, professional, and clear. Keep responses concise (2-3 short paragraphs m
 
     // Persist only after the stream completes: the assistant row needs the
     // full text, and writing mid-stream would leave a partial reply if the
-    // client disconnects. Trade-off: a crash before this line loses the turn.
+    // client disconnects.
     await prisma.chatMessage.createMany({
       data: [
         { userId: req.user!.id, role: "user", content: message },
